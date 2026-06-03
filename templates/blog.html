@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Técnico do Lithothamnium | Lithothamnium.org</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="/" class="logo-link">
+                <img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="Lithothamnium.org Logo" class="logo-img">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/artigos" class="nav-link">Biblioteca Científica</a></li>
+                <li><a href="/blog" class="nav-link">Blog Técnico</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="hero" style="padding: 4rem 0 3rem 0; background-color: var(--primary); text-align: left;">
+        <div class="container">
+            <h2 style="font-size: 2.25rem; color: white;">Blog Técnico & Notícias</h2>
+            <p style="color: rgba(255,255,255,0.85); margin-top: 0.5rem; max-width: 700px;">
+                Informações diárias, análises de solo, dinâmicas de fósforo e o panorama do mercado global de fertilizantes.
+            </p>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 3rem; margin-bottom: 5rem;">
+        
+        <!-- Search and filters -->
+        <section class="search-bar">
+            <form action="/blog" method="GET" class="search-form">
+                <div class="search-input-group">
+                    <input type="text" name="q" value="{{ busca }}" placeholder="Pesquise artigos do blog por palavra-chave (ex: fósforo, acidez, cerrado)..." class="search-input">
+                </div>
+                
+                <select name="cultura" class="filter-select">
+                    <option value="">Todas as Culturas</option>
+                    {% for cult in culturas %}
+                    <option value="{{ cult.slug }}" {% if cultura_filtro == cult.slug %}selected{% endif %}>{{ cult.nome }}</option>
+                    {% endfor %}
+                </select>
+                
+                <button type="submit" class="btn-search">Pesquisar</button>
+                {% if busca or cultura_filtro %}
+                <a href="/blog" class="btn-secondary" style="color: var(--primary); border-color: var(--gray-medium); display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border-radius: var(--radius-sm);">Limpar</a>
+                {% endif %}
+            </form>
+        </section>
+
+        <!-- Blog Posts Grid -->
+        <section>
+            {% if blog_posts %}
+            <div class="recent-grid">
+                {% for post in blog_posts %}
+                <article class="article-card">
+                    <img src="{{ post.imagem }}" alt="Capa da Postagem" class="article-img">
+                    <div class="article-body">
+                        <span class="article-meta">Cultura: {{ post.cultura | replace('_', ' / ') | title }}</span>
+                        <h4 class="article-title">{{ post.titulo }}</h4>
+                        <p class="article-excerpt">{{ post.resumo }}</p>
+                        <div class="article-footer">
+                            <span class="article-author">Por: {{ post.autor }}</span>
+                            <a href="/blog/{{ post.id }}" class="article-link">Ler Postagem &rarr;</a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="background-color: var(--white); border: 1px dashed var(--gray-medium); text-align: center; padding: 5rem 2rem; border-radius: var(--radius-md);">
+                <p style="font-size: 1.2rem; color: var(--text-light); margin-bottom: 0.5rem;">Nenhum artigo de blog encontrado para a pesquisa realizada.</p>
+                <p style="font-size: 0.95rem; color: var(--text-light);">Tente usar outros termos de busca.</p>
+                <a href="/blog" class="btn-primary" style="margin-top: 1.5rem; display: inline-block;">Ver Todas as Postagens</a>
+            </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 class="footer-logo">Lithothamnium.org</h4>
+                    <p>O primeiro portal dedicado exclusivamente a organizar e divulgar os benefícios biológicos das algas marinhas calcárias na agricultura.</p>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Navegação</h5>
+                    <ul class="footer-menu">
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/artigos">Biblioteca Científica</a></li>
+                        <li><a href="/blog">Blog Técnico</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Contato & Curadoria</h5>
+                    <p>Tem alguma pesquisa de campo ou artigo técnico para compartilhar?</p>
+                    <p style="margin-top: 0.5rem;"><a href="mailto:editor@lithothamnium.org" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem; display: inline-block; box-shadow: none;">Enviar e-mail para o Editor</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

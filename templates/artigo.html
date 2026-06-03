@@ -5,44 +5,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ pesquisa.titulo }} | Lithothamnium.org</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body>
 
     <!-- Navbar -->
-    <nav class="bg-green-700 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
-            <a href="/" class="mb-4 md:mb-0 hover:opacity-80 transition">
-                <img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="LithothamniumBR" class="h-10 w-auto">
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="/" class="logo-link">
+                <img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="Lithothamnium.org Logo" class="logo-img">
             </a>
-            <a href="/" class="font-semibold hover:text-green-300 transition">&larr; Voltar ao Início</a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/artigos" class="nav-link">Biblioteca Científica</a></li>
+                <li><a href="/blog" class="nav-link">Blog Técnico</a></li>
+            </ul>
         </div>
     </nav>
 
-    <!-- Conteúdo Central do Artigo -->
-    <main class="flex-grow w-full max-w-4xl mx-auto px-4 py-12">
-        <article class="bg-white p-8 md:p-12 rounded-lg shadow-md border-t-4 border-green-600">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">{{ pesquisa.titulo }}</h1>
-            
-            <div class="text-sm text-gray-500 mb-8 border-b border-gray-200 pb-6">
-                <p class="font-semibold mb-1 text-green-700">Fonte Original e Autoria:</p>
-                <p>{{ pesquisa.autores }}</p>
-                <p class="mt-2 text-xs">Indexado no portal em: {{ pesquisa.data_coleta }}</p>
-            </div>
+    <!-- Content Reader Area -->
+    <main class="container" style="margin-top: 3rem; margin-bottom: 5rem;">
+        <a href="/artigos" class="btn-back">&larr; Voltar para a Biblioteca</a>
+        
+        <div class="technical-content-grid" style="padding: 0;">
+            <!-- Artigo Principal -->
+            <article class="reader-card">
+                <div class="reader-header">
+                    <span class="hero-tag" style="background-color: var(--gray-light); color: var(--primary); border: 1px solid var(--gray-medium);">
+                        Cultura: {{ pesquisa.cultura | replace('_', ' / ') | title }}
+                    </span>
+                    <h1 class="reader-title">{{ pesquisa.titulo }}</h1>
+                    <div class="reader-meta">
+                        <span>Autoria: {{ pesquisa.autores }}</span>
+                        <span>Indexado em: {{ pesquisa.data_coleta }}</span>
+                    </div>
+                </div>
 
-            <!-- Aqui injetamos o texto gerado e salvo pelo Python -->
-            <div class="prose max-w-none text-gray-700 text-lg leading-relaxed mb-10">
-                {{ pesquisa.conteudo | safe }}
-            </div>
+                <!-- Conteúdo do Artigo -->
+                <div class="reader-content">
+                    {{ pesquisa.conteudo | safe }}
+                </div>
+            </article>
 
+            <!-- Painel Lateral / Download -->
+            <aside>
+                <div class="sidebar-box" style="border-top: 4px solid var(--accent);">
+                    <h5 class="sidebar-title">Documento Completo</h5>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1.5rem;">
+                        Você pode solicitar a publicação acadêmica completa para consultar gráficos, ensaios estatísticos e tabelas integras diretamente com a nossa curadoria técnica.
+                    </p>
+                    <button id="btn-solicitar" class="btn-primary" style="display: block; text-align: center; font-size: 0.9rem; padding: 0.75rem 1rem; width: 100%; border: none; cursor: pointer; font-family: inherit;">
+                        Solicitar Documento Completo
+                    </button>
+                </div>
 
-        </article>
+                {% if relacionados %}
+                <div class="sidebar-box">
+                    <h5 class="sidebar-title">Estudos Relacionados</h5>
+                    <ul class="sidebar-menu">
+                        {% for rel in relacionados %}
+                        <li class="sidebar-item" style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.75rem;">
+                            <a href="/artigo/{{ rel.id }}" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ rel.titulo }}
+                                </span>
+                                <span style="font-size: 0.75rem; color: var(--accent);">Ler Sumário &rarr;</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </aside>
+        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 py-6 text-center mt-auto">
-        <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+    <footer class="footer-contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 class="footer-logo">Lithothamnium.org</h4>
+                    <p>O primeiro portal dedicado exclusivamente a organizar e divulgar os benefícios biológicos das algas marinhas calcárias na agricultura.</p>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Navegação</h5>
+                    <ul class="footer-menu">
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/artigos">Biblioteca Científica</a></li>
+                        <li><a href="/blog">Blog Técnico</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Contato & Curadoria</h5>
+                    <p>Tem alguma pesquisa de campo ou artigo técnico para compartilhar?</p>
+                    <p style="margin-top: 0.5rem;"><a href="mailto:editor@lithothamnium.org" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem; display: inline-block; box-shadow: none;">Enviar e-mail para o Editor</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+            </div>
+        </div>
     </footer>
 
+    <!-- Modal de Solicitação de Documento -->
+    <div id="modal-solicitacao" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close-btn">&times;</button>
+            <h3 class="modal-title">Solicitar Documento</h3>
+            <p class="modal-subtitle">Preencha os dados abaixo para solicitar o envio do artigo acadêmico completo.</p>
+            
+            <form id="form-solicitacao" class="modal-form">
+                <div class="form-group">
+                    <label for="req-name" class="form-label">Seu Nome</label>
+                    <input type="text" id="req-name" required placeholder="Digite seu nome completo" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="req-email" class="form-label">Seu E-mail</label>
+                    <input type="email" id="req-email" required placeholder="nome@exemplo.com" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="req-message" class="form-label">Mensagem de Solicitação</label>
+                    <textarea id="req-message" rows="4" required class="form-textarea">Olá! Gostaria de solicitar o envio do documento científico completo para o artigo: "{{ pesquisa.titulo }}".</textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-submit-request" style="width: 100%; border: none; cursor: pointer; font-size: 1rem; padding: 0.85rem;">
+                    Enviar Solicitação por E-mail
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const btnSolicitar = document.getElementById('btn-solicitar');
+        const modal = document.getElementById('modal-solicitacao');
+        const btnClose = document.getElementById('modal-close');
+        const form = document.getElementById('form-solicitacao');
+        const articleTitle = {{ pesquisa.titulo | tojson }};
+
+        btnSolicitar.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        btnClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('req-name').value;
+            const email = document.getElementById('req-email').value;
+            const message = document.getElementById('req-message').value;
+            
+            const subject = encodeURIComponent(`Solicitação de Artigo: ${articleTitle}`);
+            const body = encodeURIComponent(`Nome: ${name}\nE-mail: ${email}\n\nMensagem:\n${message}`);
+            
+            window.location.href = `mailto:editor@lithothamnium.org?subject=${subject}&body=${body}`;
+            modal.style.display = 'none';
+        });
+    </script>
 </body>
 </html>

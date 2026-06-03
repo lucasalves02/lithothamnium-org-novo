@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.titulo }} | Blog Lithothamnium.org</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="/" class="logo-link">
+                <img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="Lithothamnium.org Logo" class="logo-img">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/artigos" class="nav-link">Biblioteca Científica</a></li>
+                <li><a href="/blog" class="nav-link">Blog Técnico</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Reader Area -->
+    <main class="container" style="margin-top: 3rem; margin-bottom: 5rem;">
+        <a href="/blog" class="btn-back">&larr; Voltar ao Blog</a>
+        
+        <div class="technical-content-grid" style="padding: 0;">
+            <!-- Blog Principal -->
+            <article class="reader-card">
+                <div class="reader-header">
+                    <span class="hero-tag" style="background-color: var(--accent); color: white; border: 1px solid var(--accent-dark);">
+                        {{ post.cultura | replace('_', ' / ') | title }}
+                    </span>
+                    <h1 class="reader-title" style="margin-top: 1rem;">{{ post.titulo }}</h1>
+                    <div class="reader-meta">
+                        <span>Escrito por: {{ post.autor }}</span>
+                        <span>Publicado em: {{ post.data_publicacao }}</span>
+                    </div>
+                </div>
+
+                <div class="reader-content">
+                    <!-- Thumbnail do Post -->
+                    {% if post.imagem %}
+                    <img src="{{ post.imagem }}" alt="Capa" style="width: 100%; height: 22rem; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 2rem; border: 1px solid var(--gray-medium);">
+                    {% endif %}
+                    
+                    {{ post.conteudo | safe }}
+                </div>
+            </article>
+
+            <!-- Lateral -->
+            <aside>
+                {% if relacionados %}
+                <div class="sidebar-box">
+                    <h5 class="sidebar-title">Mais Deste Assunto</h5>
+                    <ul class="sidebar-menu">
+                        {% for rel in relacionados %}
+                        <li class="sidebar-item" style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.75rem;">
+                            <a href="/blog/{{ rel.id }}" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ rel.titulo }}
+                                </span>
+                                <span style="font-size: 0.75rem; color: var(--accent);">Ler postagem &rarr;</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="sidebar-box" style="background-color: var(--primary); color: white; border: none;">
+                    <h5 class="sidebar-title" style="color: white; border-bottom-color: rgba(255,255,255,0.2);">Boletim Técnico</h5>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                        Assine nosso canal de divulgação para receber pesquisas, dosagens e insights práticos sobre o uso de algas calcárias em seu e-mail.
+                    </p>
+                    <a href="mailto:editor@lithothamnium.org?subject=Inscrição%20Boletim%20Técnico" class="btn-primary" style="display: block; text-align: center; font-size: 0.85rem; background-color: var(--accent); border-color: var(--accent); box-shadow: none;">
+                        Inscrever-se
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 class="footer-logo">Lithothamnium.org</h4>
+                    <p>O primeiro portal dedicado exclusivamente a organizar e divulgar os benefícios biológicos das algas marinhas calcárias na agricultura.</p>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Navegação</h5>
+                    <ul class="footer-menu">
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/artigos">Biblioteca Científica</a></li>
+                        <li><a href="/blog">Blog Técnico</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Contato & Curadoria</h5>
+                    <p>Tem alguma pesquisa de campo ou artigo técnico para compartilhar?</p>
+                    <p style="margin-top: 0.5rem;"><a href="mailto:editor@lithothamnium.org" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem; display: inline-block; box-shadow: none;">Enviar e-mail para o Editor</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

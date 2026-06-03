@@ -3,164 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lithothamnium.org | Pesquisa Aplicada</title>
+    <title>Lithothamnium.org | Portal Científico e Tecnológico</title>
+    <meta name="description" content="O repositório definitivo sobre os benefícios, pesquisas e dosagem do uso do Lithothamnium nas principais culturas agrícolas brasileiras.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body>
 
     <!-- Navbar -->
-    <nav class="bg-green-700 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
-            <h1 class="mb-4 md:mb-0">
-                <a href="/"><img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="LithothamniumBR" class="h-10 w-auto hover:opacity-80 transition"></a>
-            </h1>
-            <ul class="flex flex-wrap justify-center gap-4 md:gap-6 font-semibold">
-                <li><a href="#" class="hover:text-green-300 transition">Início</a></li>
-                <li><a href="#aplicacoes" class="hover:text-green-300 transition">Aplicações</a></li>
-                <li><a href="#artigos" class="hover:text-green-300 transition">Artigos do Mês</a></li>
-                <li><a href="#contato" class="hover:text-green-300 transition">Contato</a></li>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="/" class="logo-link">
+                <img src="{{ url_for('static', filename='assets/nome_logo.png') }}" alt="Lithothamnium.org Logo" class="logo-img">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/artigos" class="nav-link">Biblioteca Científica</a></li>
+                <li><a href="/blog" class="nav-link">Blog Técnico</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    {% set hero_bg = url_for('static', filename='assets/topo2.jpg') %}
-    <header class="relative bg-cover bg-center" style="background-image: url('{{ hero_bg }}');">
-        <!-- Overlay escuro para garantir a leitura do texto -->
-        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
-        
-        <div class="relative max-w-6xl mx-auto px-4 py-24 text-center z-10">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">O Poder do Lithothamnium</h2>
-            <p class="text-lg text-gray-200 mb-8 max-w-3xl mx-auto">
-                Confira a curadoria exclusiva do Lithothamnium.org com os melhores artigos científicos e aplicações práticas. Lista atualizada mensalmente.
+    <header class="hero" style="background-image: url('{{ url_for('static', filename='assets/topo2.jpg') }}');">
+        <div class="container hero-content">
+            <span class="hero-tag">Biologia Marinha aplicada à Produtividade</span>
+            <h2>O Poder do Lithothamnium na Agricultura</h2>
+            <p class="hero-text">
+                Explore o maior portal técnico sobre o uso de algas calcárias marinhas. Descubra dosagens, formas de aplicação e resultados comprovados por cultura.
             </p>
-            <a href="#artigos" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition shadow-lg">
-                Ver Artigos do Mês
-            </a>
+            <div class="hero-actions">
+                <a href="#explorar" class="btn-primary">Explorar por Cultura</a>
+                <a href="/artigos" class="btn-secondary">Ver Biblioteca Científica</a>
+            </div>
         </div>
     </header>
 
-    <!-- Aplicações (Solo e Fertirrigação) -->
-    <section id="aplicacoes" class="py-16 bg-green-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-green-800 mb-10">Aplicações Agrícolas</h3>
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Card Solo -->
-                <div class="bg-white p-8 rounded-lg shadow hover:shadow-md transition border-t-4 border-green-600">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-3">Aplicação via Solo</h4>
-                    <p class="text-gray-600 mb-4">
-                        O Lithothamnium atua como um excelente condicionador biológico e corretivo de acidez. Devido à sua estrutura microporosa, oferece altíssima reatividade, disponibilizando Cálcio (Ca) e Magnésio (Mg) de forma rápida e estimulando a microbiota benéfica do solo.
-                    </p>
-                </div>
-                <!-- Card Fertirrigação -->
-                <div class="bg-white p-8 rounded-lg shadow hover:shadow-md transition border-t-4 border-blue-500">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-3">Via Fertirrigação</h4>
-                    <p class="text-gray-600 mb-4">
-                        Utilizado em suspensões concentradas e formulações micronizadas (pó solúvel). É ideal para fertirrigação por não entupir gotejadores, garantindo absorção radicular ou foliar imediata de nutrientes orgânicos, aminoácidos e minerais.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Carta do Editor / Síntese -->
-    <section class="py-16 bg-white border-t border-gray-200">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <span class="text-green-600 font-bold tracking-wider uppercase text-sm">Visão Geral</span>
-                <h3 class="text-3xl font-bold text-gray-900 mt-2">O que a ciência mostra!</h3>
-                <p class="text-gray-600 mt-4 max-w-3xl mx-auto text-lg">
-                    Os artigos reunidos consolidam o Lithothamnium como uma ferramenta multifuncional, atuando em frentes cruciais para a sustentabilidade e produtividade no campo.
+    <!-- Cultura Explorer Section -->
+    <section id="explorar" class="section section-bg-white">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Guia Prático por Cultura</span>
+                <h3 class="section-title">Como Aplicar e Resultados Comprovados</h3>
+                <p class="section-description">
+                    Selecione uma cultura agrícola abaixo para acessar dosagens recomendadas, épocas de aplicação e estudos científicos específicos sobre o uso de Lithothamnium.
                 </p>
             </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition">
-                    <h4 class="text-xl font-bold text-green-800 mb-3">1. Corretivo de Solo Excepcional</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        Com poder de neutralização comparável ao carbonato de cálcio puro, o Lithothamnium eleva o pH e fornece cálcio e magnésio altamente biodisponíveis. Sua rápida reatividade permite até aplicações superficiais (como em pastagens) para neutralizar o alumínio tóxico rapidamente.
-                    </p>
-                </div>
 
-                <!-- Card 2 -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition">
-                    <h4 class="text-xl font-bold text-green-800 mb-3">2. Bioestimulante Vegetal</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        Rico em ácidos húmicos e propriedades auxínicas, atua na fisiologia da planta impulsionando o sistema radicular. Isso aumenta a absorção de nutrientes e gera frutos maiores, polpas mais firmes e maior teor de açúcares em variadas culturas.
-                    </p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition">
-                    <h4 class="text-xl font-bold text-green-800 mb-3">3. Tecnologia de Sementes e Saúde</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        O revestimento (coating) protege sementes e acelera a emergência com maior tolerância ao estresse térmico. Biotecnologicamente, demonstra efeito prebiótico estimulando bactérias benéficas e combatendo patógenos.
-                    </p>
-                </div>
-
-                <!-- Card 4 (Destaque do Editor) -->
-                <div class="bg-green-50 p-6 rounded-lg shadow-sm border-l-4 border-green-600 hover:shadow-md transition">
-                    <h4 class="text-xl font-bold text-green-900 mb-3">O Grande Aprendizado Técnico</h4>
-                    <p class="text-green-800 leading-relaxed">
-                        <strong>A dosagem e a forma de aplicação são as chaves do sucesso.</strong> Quando aplicado de forma incorreta ou em excesso, pode estressar a planta. Usado na dose e manejo corretos, desponta como o substituto natural e perfeito para fertilizantes sintéticos.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Artigos do Mês -->
-    <section id="artigos" class="py-16 bg-gray-50 border-t border-gray-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <!-- Cabeçalho Centralizado -->
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-bold text-green-800 mb-4">Artigos do Mês: Escolhas do Editor</h3>
-                <p class="text-gray-600 max-w-2xl mx-auto">
-                    Nossa curadoria seleciona mensalmente os melhores estudos, pesquisas e aplicações práticas do Lithothamnium para enriquecer seu conhecimento no agronegócio.
-                </p>
-            </div>
-            
-            <!-- Grid de Pesquisas -->
-            <div class="grid md:grid-cols-3 gap-6">
-                {% for pesquisa in pesquisas %}
-                <article class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col bg-white">
-                    <img src="{{ pesquisa.imagem }}" alt="Capa do Artigo" class="w-full h-48 object-cover object-top border-b border-gray-200">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h4 class="text-lg font-bold text-gray-800 mb-2 leading-snug">{{ pesquisa.titulo }}</h4>
-                        <p class="text-xs text-green-700 font-semibold mb-3">{{ pesquisa.autores }}</p>
-                        <div class="text-gray-600 text-sm mb-5 flex-grow line-clamp-4">
-                            {{ pesquisa.resumo }}
-                        </div>
-                        <a href="/artigo/{{ pesquisa.id }}" class="text-blue-600 font-semibold hover:underline mt-auto">Ler artigo completo no site &rarr;</a>
+            <div class="culture-grid">
+                {% for cultura in culturas %}
+                <div class="culture-card">
+                    <div class="culture-card-img-wrapper">
+                        <img src="{{ cultura.imagem }}" alt="Cultura de {{ cultura.nome }}" class="culture-card-img">
+                        <span class="culture-card-badge">
+                            <!-- Ícones inline simplificados -->
+                            {% if cultura.icone == 'coffee' %}☕
+                            {% elif cultura.icone == 'sprout' %}🌱
+                            {% elif cultura.icone == 'wheat' %}🌾
+                            {% elif cultura.icone == 'apple' %}🍎
+                            {% elif cultura.icone == 'carrot' %}🥕
+                            {% else %}🍃{% endif %}
+                            {{ cultura.nome }}
+                        </span>
                     </div>
-                </article>
-                {% else %}
-                <div class="col-span-3 text-center py-8">
-                    <p class="text-gray-600">Nenhum artigo selecionado para este mês ainda. Faça o upload dos PDFs e execute o script para atualizar a lista.</p>
+                    <div class="culture-card-content">
+                        <h4 class="culture-card-title">{{ cultura.nome }}</h4>
+                        <p class="culture-card-text">{{ cultura.resumo }}</p>
+                        <a href="/cultura/{{ cultura.slug }}" class="culture-card-link">
+                            Acessar Guia Técnico &rarr;
+                        </a>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    <!-- Contato -->
-    <section id="contato" class="py-16 bg-white border-t border-gray-200">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-bold text-green-800 mb-4">Entre em Contato</h3>
-            <p class="text-gray-600 mb-8 text-lg">
-                Tem dúvidas, sugestões de pautas ou deseja compartilhar uma pesquisa conosco? Fale diretamente com a nossa curadoria.
-            </p>
-            <a href="mailto:editor@lithothamnium.org" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition shadow-md">
-                Enviar e-mail para o Editor
-            </a>
+    <!-- Geopolítica e Crise do Fósforo Banner -->
+    <section class="section" style="padding-top: 0; padding-bottom: 2rem;">
+        <div class="container">
+            <div class="crisis-banner">
+                <div class="crisis-banner-content">
+                    <span class="hero-tag" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">Análise Estratégica</span>
+                    <h3 class="crisis-banner-title">O Lithothamnium e a Solução para a Crise Global de Fertilizantes</h3>
+                    <p class="crisis-banner-text">
+                        Com a severa redução mundial na produção de fósforo processado, causada pela escassez crítica de ácido sulfúrico e conflitos geopolíticos que afetam as rotas de importação brasileiras, otimizar a eficiência de solo é essencial. Saiba como o Lithothamnium atua quimicamente para desbloquear o fósforo adsorvido na argila, reduzindo a dependência de adubos químicos importados de alto custo.
+                    </p>
+                    <a href="/blog/1" class="btn-primary" style="background-color: var(--white); color: var(--primary); box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);">
+                        Ler Artigo Técnico Completo
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 py-6 text-center">
-        <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+    <!-- Blog Posts Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Blog Técnico e Notícias</span>
+                <h3 class="section-title">Publicações Recentes</h3>
+                <p class="section-description">
+                    Acompanhe atualizações diárias sobre dinâmica de solo, reatividade de minerais biogênicos e notícias sobre o mercado agrícola global.
+                </p>
+            </div>
+
+            <div class="recent-grid">
+                {% for post in blog_posts %}
+                <article class="article-card">
+                    <img src="{{ post.imagem }}" alt="Capa da Postagem" class="article-img">
+                    <div class="article-body">
+                        <span class="article-meta">Cultura: {{ post.cultura | replace('_', ' / ') | title }}</span>
+                        <h4 class="article-title">{{ post.titulo }}</h4>
+                        <p class="article-excerpt">{{ post.resumo }}</p>
+                        <div class="article-footer">
+                            <span class="article-author">Por: {{ post.autor }}</span>
+                            <a href="/blog/{{ post.id }}" class="article-link">Ler Postagem &rarr;</a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="/blog" class="btn-primary" style="display: inline-block;">Ver Todas as Postagens</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Biblioteca Científica Section -->
+    <section class="section section-bg-white" style="border-top: 1px solid var(--gray-medium);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Pesquisa e Ciência</span>
+                <h3 class="section-title">Biblioteca Científica Curada</h3>
+                <p class="section-description">
+                    Estudos e artigos acadêmicos indexados diretamente dos principais periódicos do agronegócio.
+                </p>
+            </div>
+
+            <div class="recent-grid">
+                {% for pesquisa in pesquisas %}
+                <article class="article-card">
+                    <img src="{{ pesquisa.imagem }}" alt="Capa do Artigo" class="article-img">
+                    <div class="article-body">
+                        <span class="article-meta">Área: {{ pesquisa.cultura | replace('_', ' / ') | title }}</span>
+                        <h4 class="article-title">{{ pesquisa.titulo }}</h4>
+                        <p class="article-excerpt">{{ pesquisa.resumo }}</p>
+                        <div class="article-footer">
+                            <span class="article-author">{{ pesquisa.autores }}</span>
+                            <a href="/artigo/{{ pesquisa.id }}" class="article-link">Ler Sumário Técnico &rarr;</a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="/artigos" class="btn-primary" style="display: inline-block;">Explorar Toda a Biblioteca</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contato -->
+    <footer class="footer-contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 class="footer-logo">Lithothamnium.org</h4>
+                    <p>O primeiro portal dedicado exclusivamente a organizar e difundir os benefícios biológicos das algas marinhas calcárias na agricultura.</p>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Navegação</h5>
+                    <ul class="footer-menu">
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/artigos">Biblioteca Científica</a></li>
+                        <li><a href="/blog">Blog Técnico</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: white; margin-bottom: 1rem;">Contato & Curadoria</h5>
+                    <p>Tem alguma pesquisa de campo ou artigo técnico para compartilhar?</p>
+                    <p style="margin-top: 0.5rem;"><a href="mailto:editor@lithothamnium.org" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem; display: inline-block; box-shadow: none;">Enviar e-mail para o Editor</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Lithothamnium.org | Todos os direitos reservados.</p>
+            </div>
+        </div>
     </footer>
 
 </body>
