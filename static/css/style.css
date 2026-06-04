@@ -3,6 +3,7 @@
 :root {
     --primary: #1b3d22;      /* Deep Forest Green */
     --primary-light: #2d5a35;
+    --primary-text: #1b3d22;
     --accent: #e07a5f;       /* Coral (marine origin) */
     --accent-dark: #c55d42;
     --cream: #faf7f2;        /* Lithothamnium Soft Cream */
@@ -19,6 +20,7 @@
     --radius-md: 0.75rem;
     --radius-lg: 1.5rem;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-color: var(--gray-medium);
 }
 
 /* Base Styles */
@@ -40,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
     line-height: 1.25;
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 a {
@@ -59,14 +61,15 @@ a {
 
 /* Header & Navbar */
 .navbar {
-    background-color: rgba(27, 61, 34, 0.95);
-    backdrop-filter: blur(10px);
+    background-color: rgba(27, 61, 34, 0.85);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
     color: var(--text-white);
     box-shadow: var(--shadow-md);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .navbar-container {
@@ -285,9 +288,9 @@ a {
 }
 
 .culture-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.01);
     box-shadow: var(--shadow-lg);
-    border-color: rgba(27, 61, 34, 0.2);
+    border-color: var(--primary-light);
 }
 
 .culture-card-img-wrapper {
@@ -417,8 +420,9 @@ a {
 }
 
 .article-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.01);
     box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
 }
 
 .article-img {
@@ -566,12 +570,12 @@ a {
 
 .tab-pane.active {
     display: block;
-    animation: fadeIn 0.4s ease-in-out;
+    animation: tabSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes tabSlideIn {
+    from { opacity: 0; transform: translateX(15px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .tab-pane ul {
@@ -946,4 +950,240 @@ a {
 @keyframes modalSlideUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Premium Dark Mode, Icons, and UX Additions --- */
+
+/* Dark Mode Variables Override */
+body.dark-mode {
+    --cream: #09130c;        /* Rich dark forest black background */
+    --white: #112215;        /* Premium dark green card background */
+    --gray-light: #162c1c;   /* Subtle background */
+    --gray-medium: #223f2b;  /* Borders */
+    --text-dark: #ecf3ed;    /* Main text (soft light green/white) */
+    --text-light: #9db2a2;   /* Muted text */
+    --primary-text: #a2d2ad; /* Legible bright green for headers/text */
+    --border-color: #223f2b;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}
+
+/* Dark Mode Specific Overrides */
+body.dark-mode .section-bg-white {
+    background-color: var(--white);
+}
+
+body.dark-mode .navbar {
+    background-color: rgba(9, 19, 12, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .logo-img {
+    filter: brightness(0) invert(1) opacity(0.9);
+}
+
+body.dark-mode .sidebar-box {
+    background-color: var(--white);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .sidebar-link:hover {
+    background-color: var(--gray-light);
+    color: var(--primary-text);
+}
+
+body.dark-mode .search-bar {
+    background-color: var(--white);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .search-input {
+    background-color: var(--gray-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+body.dark-mode .filter-select {
+    background-color: var(--gray-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+body.dark-mode .tab-pane {
+    color: var(--text-dark);
+}
+
+body.dark-mode .tab-pane ul li {
+    color: var(--text-dark);
+}
+
+body.dark-mode .tab-pane li::before {
+    color: var(--accent);
+}
+
+body.dark-mode .tab-btn {
+    color: var(--text-light);
+}
+
+body.dark-mode .tab-btn:hover {
+    color: var(--primary-text);
+}
+
+body.dark-mode .tab-btn.active {
+    color: var(--primary-text);
+}
+
+body.dark-mode .tab-btn.active::after {
+    background-color: var(--primary-text);
+}
+
+body.dark-mode .article-link {
+    color: var(--primary-text);
+}
+
+body.dark-mode .article-link:hover {
+    color: var(--accent);
+}
+
+body.dark-mode .btn-back {
+    color: var(--primary-text);
+}
+
+body.dark-mode .btn-back:hover {
+    color: var(--accent);
+}
+
+body.dark-mode .technical-card {
+    background-color: var(--white);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .reader-card {
+    background-color: var(--white);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+body.dark-mode .reader-meta {
+    color: var(--text-light);
+}
+
+body.dark-mode .reader-content {
+    color: var(--text-dark);
+}
+
+body.dark-mode .footer-contact {
+    border-top-color: var(--accent-dark);
+    background-color: #050a06;
+}
+
+/* Theme Toggle Button Styling */
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    transition: var(--transition);
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.theme-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
+.sun-icon {
+    display: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.moon-icon {
+    display: block;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+body.dark-mode .sun-icon {
+    display: block;
+    color: #ffd166;
+}
+
+body.dark-mode .moon-icon {
+    display: none;
+}
+
+/* SVG Icon base styling */
+.icon-svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    display: inline-block;
+    vertical-align: middle;
+    transition: var(--transition);
+}
+
+/* Card Badge SVG alignment adjustment */
+.culture-card-badge .icon-svg {
+    margin-right: 0.25rem;
+    stroke-width: 2;
+}
+
+/* Back to Top Button Styling */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--accent);
+    color: var(--text-white);
+    border: none;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(15px);
+}
+
+.back-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top-btn:hover {
+    background-color: var(--accent-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.back-to-top-btn:active {
+    transform: translateY(-1px);
+}
+
+.back-to-top-btn .icon-svg {
+    width: 1.5rem;
+    height: 1.5rem;
 }

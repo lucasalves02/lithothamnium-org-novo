@@ -7,6 +7,15 @@
     <meta name="description" content="Acesse o guia agronômico do Lithothamnium na cultura de {{ cultura.nome }}. Veja dosagens sugeridas, épocas de aplicação e resultados científicos de campo.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -45,6 +54,12 @@
                 <li><a href="/" class="nav-link">Início</a></li>
                 <li><a href="/artigos" class="nav-link">Biblioteca Científica</a></li>
                 <li><a href="/blog" class="nav-link">Blog Técnico</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+                        <svg class="sun-icon icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        <svg class="moon-icon icon-svg" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -241,6 +256,45 @@
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
+    </script>
+
+    <!-- Botão Voltar ao Topo -->
+    <button id="back-to-top" class="back-to-top-btn" aria-label="Voltar ao topo">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+
+    <!-- Scripts de Interatividade -->
+    <script>
+        // Tema Escuro / Claro
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const isDark = document.body.classList.toggle('dark-mode');
+                    document.documentElement.classList.toggle('dark-mode', isDark);
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                });
+            }
+
+            // Voltar ao Topo
+            const backToTop = document.getElementById('back-to-top');
+            if (backToTop) {
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 300) {
+                        backToTop.classList.add('visible');
+                    } else {
+                        backToTop.classList.remove('visible');
+                    }
+                });
+
+                backToTop.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
     </script>
 
     <!-- Vercel Analytics -->
