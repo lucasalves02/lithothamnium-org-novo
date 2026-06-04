@@ -54,7 +54,13 @@
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero" style="background-image: url('{{ url_for('static', filename='assets/topo2.jpg') }}');">
+    <header id="hero-header" class="hero" data-bg="{{ url_for('static', filename='assets/topo2.jpg') }}">
+        <script>
+            (function() {
+                const el = document.getElementById('hero-header');
+                if (el) el.style.backgroundImage = 'url(' + el.getAttribute('data-bg') + ')';
+            })();
+        </script>
         <div class="container hero-content">
             <span class="hero-tag">Biologia Marinha aplicada à Produtividade</span>
             <h1>O Poder do Lithothamnium na Agricultura</h1>
