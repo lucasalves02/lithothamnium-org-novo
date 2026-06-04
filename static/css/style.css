@@ -184,12 +184,13 @@ a {
     margin-bottom: 1.5rem;
 }
 
-.hero h2 {
+.hero h1 {
     color: var(--text-white);
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 1.25rem;
     letter-spacing: -0.02em;
+    line-height: 1.15;
 }
 
 .hero-text {
