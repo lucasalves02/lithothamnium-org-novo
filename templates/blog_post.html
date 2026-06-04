@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post.titulo }} | Blog Lithothamnium.org</title>
+    <title>{{ post.titulo }} | Blog Técnico</title>
+    <meta name="description" content="Leia o artigo completo no Blog Técnico da Lithothamnium.org: {{ post.resumo | truncate(150) | forceescape }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.url }}"
+      },
+      "headline": "{{ post.titulo | forceescape }}",
+      "description": "{{ post.resumo | truncate(150) | forceescape }}",
+      "image": "{{ post.imagem or (request.url_root + 'static/assets/nome_logo.png') }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ post.autor | forceescape }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lithothamnium.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ request.url_root }}static/assets/nome_logo.png"
+        }
+      },
+      "datePublished": "{{ post.data_publicacao }}"
+    }
+    </script>
 </head>
 <body>
 
@@ -44,7 +71,7 @@
                 <div class="reader-content">
                     <!-- Thumbnail do Post -->
                     {% if post.imagem %}
-                    <img src="{{ post.imagem }}" alt="Capa" style="width: 100%; height: 22rem; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 2rem; border: 1px solid var(--gray-medium);">
+                    <img src="{{ post.imagem }}" alt="Capa do artigo de blog: {{ post.titulo }} - Lithothamnium.org" style="width: 100%; height: 22rem; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 2rem; border: 1px solid var(--gray-medium);">
                     {% endif %}
                     
                     {{ post.conteudo | safe }}
@@ -55,7 +82,7 @@
             <aside>
                 {% if relacionados %}
                 <div class="sidebar-box">
-                    <h5 class="sidebar-title">Mais Deste Assunto</h5>
+                    <h3 class="sidebar-title">Mais Deste Assunto</h3>
                     <ul class="sidebar-menu">
                         {% for rel in relacionados %}
                         <li class="sidebar-item" style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.75rem;">
@@ -72,7 +99,7 @@
                 {% endif %}
 
                 <div class="sidebar-box" style="background-color: var(--primary); color: white; border: none;">
-                    <h5 class="sidebar-title" style="color: white; border-bottom-color: rgba(255,255,255,0.2);">Boletim Técnico</h5>
+                    <h3 class="sidebar-title" style="color: white; border-bottom-color: rgba(255,255,255,0.2);">Boletim Técnico</h3>
                     <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
                         Assine nosso canal de divulgação para receber pesquisas, dosagens e insights práticos sobre o uso de algas calcárias em seu e-mail.
                     </p>

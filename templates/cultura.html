@@ -3,9 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uso de Lithothamnium no {{ cultura.nome }} | Lithothamnium.org</title>
+    <title>Uso de Lithothamnium no {{ cultura.nome }} | Recomendações e Dosagens</title>
+    <meta name="description" content="Acesse o guia agronômico do Lithothamnium na cultura de {{ cultura.nome }}. Veja dosagens sugeridas, épocas de aplicação e resultados científicos de campo.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.url }}"
+      },
+      "headline": "Uso de Lithothamnium no {{ cultura.nome }}",
+      "description": "Acesse o guia técnico de aplicação de Lithothamnium em {{ cultura.nome }}. Veja dosagens sugeridas, épocas de aplicação e estudos de campo comprovados.",
+      "image": "{{ cultura.imagem }}",
+      "author": {
+        "@type": "Organization",
+        "name": "Lithothamnium.org"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lithothamnium.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ request.url_root }}static/assets/nome_logo.png"
+        }
+      }
+    }
+    </script>
 </head>
 <body>
 
@@ -51,7 +77,7 @@
 
                     <!-- Conteúdo das Abas -->
                     <div id="sintese" class="tab-pane active">
-                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Benefícios do Lithothamnium no {{ cultura.nome }}</h4>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Benefícios do Lithothamnium no {{ cultura.nome }}</h2>
                         <p style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 1.5rem;">{{ cultura.resumo }}</p>
                         <div style="background-color: var(--gray-light); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
                             <p style="font-style: italic; font-size: 0.95rem; color: var(--text-dark); margin: 0;">
@@ -61,7 +87,7 @@
                     </div>
 
                     <div id="aplicacao" class="tab-pane">
-                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Recomendações e Dosagens de Campo</h4>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Recomendações e Dosagens de Campo</h2>
                         <p style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 1.5rem;">
                             As dosagens abaixo são sugestões gerais baseadas em pesquisas agronômicas consolidadas. Recomendamos realizar análise foliar e do solo prévias.
                         </p>
@@ -71,7 +97,7 @@
                     </div>
 
                     <div id="resultados" class="tab-pane">
-                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Aumentos Produtivos Registrados</h4>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Aumentos Produtivos Registrados</h2>
                         <p style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 1.5rem;">
                             Estudos em campos comerciais e institutos de pesquisa registraram as seguintes melhorias fisiológicas e econômicas:
                         </p>
@@ -85,15 +111,15 @@
                 <section style="margin-top: 4rem;">
                     <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray-medium); padding-bottom: 0.5rem;">
                         Estudos Científicos Relacionados
-                    </h3>
+                    </h2>
                     
                     {% if pesquisas %}
                     <div class="recent-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
                         {% for pesquisa in pesquisas %}
                         <article class="article-card" style="flex-direction: row; height: auto; min-height: 12rem;">
-                            <img src="{{ pesquisa.imagem }}" alt="Capa" style="width: 10rem; object-fit: cover; border-right: 1px solid var(--gray-medium); border-bottom: none;">
+                            <img src="{{ pesquisa.imagem }}" alt="Capa do artigo científico: {{ pesquisa.titulo }} - Lithothamnium.org" style="width: 10rem; object-fit: cover; border-right: 1px solid var(--gray-medium); border-bottom: none;">
                             <div class="article-body" style="padding: 1.25rem;">
-                                <h4 class="article-title" style="font-size: 1.15rem; margin-bottom: 0.5rem;">{{ pesquisa.titulo }}</h4>
+                                <h3 class="article-title" style="font-size: 1.15rem; margin-bottom: 0.5rem;">{{ pesquisa.titulo }}</h3>
                                 <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500; display: block; margin-bottom: 0.75rem;">{{ pesquisa.autores }}</span>
                                 <p style="font-size: 0.9rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem;">
                                     {{ pesquisa.resumo }}
@@ -115,15 +141,15 @@
                 <section style="margin-top: 4rem;">
                     <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray-medium); padding-bottom: 0.5rem;">
                         Artigos de Blog Relacionados
-                    </h3>
+                    </h2>
                     
                     {% if blog_posts %}
                     <div class="recent-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
                         {% for post in blog_posts %}
                         <article class="article-card">
-                            <img src="{{ post.imagem }}" alt="Capa" class="article-img" style="height: 10rem;">
+                            <img src="{{ post.imagem }}" alt="Capa do post de blog: {{ post.titulo }} - Lithothamnium.org" class="article-img" style="height: 10rem;">
                             <div class="article-body" style="padding: 1.25rem;">
-                                <h4 class="article-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;">{{ post.titulo }}</h4>
+                                <h3 class="article-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;">{{ post.titulo }}</h3>
                                 <p style="font-size: 0.85rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem;">
                                     {{ post.resumo }}
                                 </p>
@@ -142,7 +168,7 @@
             <!-- Navegação Lateral -->
             <aside>
                 <div class="sidebar-box">
-                    <h5 class="sidebar-title">Outras Culturas</h5>
+                    <h3 class="sidebar-title">Outras Culturas</h3>
                     <ul class="sidebar-menu">
                         {% for out in outras_culturas %}
                         <li class="sidebar-item">
@@ -156,7 +182,7 @@
                 </div>
 
                 <div class="sidebar-box" style="border-top: 4px solid var(--primary);">
-                    <h5 class="sidebar-title">Contato de Agrônomos</h5>
+                    <h3 class="sidebar-title">Contato de Agrônomos</h3>
                     <p style="font-size: 0.85rem; color: var(--text-light);">
                         Tem dúvidas sobre a dosagem exata do seu talhão ou gostaria de enviar uma sugestão de recomendação técnica? Fale conosco.
                     </p>

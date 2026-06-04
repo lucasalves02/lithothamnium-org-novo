@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ pesquisa.titulo }} | Lithothamnium.org</title>
+    <title>{{ pesquisa.titulo }} | Biblioteca Científica</title>
+    <meta name="description" content="Leia a síntese da pesquisa científica sobre Lithothamnium: {{ pesquisa.resumo | truncate(150) | forceescape }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.url }}"
+      },
+      "headline": "{{ pesquisa.titulo | forceescape }}",
+      "description": "{{ pesquisa.resumo | truncate(150) | forceescape }}",
+      "image": "{{ pesquisa.imagem or (request.url_root + 'static/assets/nome_logo.png') }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ pesquisa.autores | forceescape }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lithothamnium.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ request.url_root }}static/assets/nome_logo.png"
+        }
+      },
+      "datePublished": "{{ pesquisa.data_coleta }}"
+    }
+    </script>
 </head>
 <body>
 
@@ -50,7 +77,7 @@
             <!-- Painel Lateral / Download -->
             <aside>
                 <div class="sidebar-box" style="border-top: 4px solid var(--accent);">
-                    <h5 class="sidebar-title">Documento Completo</h5>
+                    <h3 class="sidebar-title">Documento Completo</h3>
                     <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1.5rem;">
                         Você pode solicitar a publicação acadêmica completa para consultar gráficos, ensaios estatísticos e tabelas integras diretamente com a nossa curadoria técnica.
                     </p>
@@ -61,7 +88,7 @@
 
                 {% if relacionados %}
                 <div class="sidebar-box">
-                    <h5 class="sidebar-title">Estudos Relacionados</h5>
+                    <h3 class="sidebar-title">Estudos Relacionados</h3>
                     <ul class="sidebar-menu">
                         {% for rel in relacionados %}
                         <li class="sidebar-item" style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.75rem;">

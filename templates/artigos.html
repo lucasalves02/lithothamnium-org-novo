@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Científica de Lithothamnium | Lithothamnium.org</title>
+    <title>Biblioteca de Pesquisas Científicas sobre Lithothamnium | Lithothamnium.org</title>
+    <meta name="description" content="Busque e filtre artigos científicos, ensaios de campo e relatórios acadêmicos sobre o uso do Lithothamnium em diferentes culturas agrícolas.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -26,7 +27,7 @@
     <!-- Header Section -->
     <header class="hero" style="padding: 4rem 0 3rem 0; background-color: var(--primary); text-align: left;">
         <div class="container">
-            <h2 style="font-size: 2.25rem; color: white;">Biblioteca Científica</h2>
+            <h1 style="font-size: 2.25rem; color: white;">Biblioteca Científica</h1>
             <p style="color: rgba(255,255,255,0.85); margin-top: 0.5rem; max-width: 700px;">
                 Pesquise e consulte sumários e relatórios de ensaios agronômicos sobre o uso do Lithothamnium em diferentes culturas.
             </p>
@@ -62,10 +63,10 @@
             <div class="recent-grid">
                 {% for pesquisa in pesquisas %}
                 <article class="article-card">
-                    <img src="{{ pesquisa.imagem }}" alt="Capa do Artigo" class="article-img">
+                    <img src="{{ pesquisa.imagem }}" alt="Capa do artigo científico: {{ pesquisa.titulo }} - Lithothamnium.org" class="article-img">
                     <div class="article-body">
                         <span class="article-meta">Cultura: {{ pesquisa.cultura | replace('_', ' / ') | title }}</span>
-                        <h4 class="article-title">{{ pesquisa.titulo }}</h4>
+                        <h3 class="article-title">{{ pesquisa.titulo }}</h3>
                         <p class="article-excerpt">{{ pesquisa.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">{{ pesquisa.autores }}</span>

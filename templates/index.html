@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lithothamnium.org | Portal Científico e Tecnológico</title>
-    <meta name="description" content="O repositório definitivo sobre os benefícios, pesquisas e dosagem do uso do Lithothamnium nas principais culturas agrícolas brasileiras.">
+    <title>Lithothamnium na Agricultura | Portal Científico e Tecnológico</title>
+    <meta name="description" content="O repositório definitivo sobre os benefícios, pesquisas, dosagem e uso do Lithothamnium nas principais culturas agrícolas brasileiras. Encontre guias e ensaios de campo.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Lithothamnium.org",
+      "url": "{{ request.url_root }}",
+      "description": "O repositório definitivo sobre os benefícios, pesquisas, dosagem e uso do Lithothamnium nas principais culturas agrícolas brasileiras.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ request.url_root }}artigos?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body>
 
@@ -28,7 +42,7 @@
     <header class="hero" style="background-image: url('{{ url_for('static', filename='assets/topo2.jpg') }}');">
         <div class="container hero-content">
             <span class="hero-tag">Biologia Marinha aplicada à Produtividade</span>
-            <h2>O Poder do Lithothamnium na Agricultura</h2>
+            <h1>O Poder do Lithothamnium na Agricultura</h1>
             <p class="hero-text">
                 Explore o maior portal técnico sobre o uso de algas calcárias marinhas. Descubra dosagens, formas de aplicação e resultados comprovados por cultura.
             </p>
@@ -44,7 +58,7 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-subtitle">Guia Prático por Cultura</span>
-                <h3 class="section-title">Como Aplicar e Resultados Comprovados</h3>
+                <h2 class="section-title">Como Aplicar e Resultados Comprovados</h2>
                 <p class="section-description">
                     Selecione uma cultura agrícola abaixo para acessar dosagens recomendadas, épocas de aplicação e estudos científicos específicos sobre o uso de Lithothamnium.
                 </p>
@@ -54,7 +68,7 @@
                 {% for cultura in culturas %}
                 <div class="culture-card">
                     <div class="culture-card-img-wrapper">
-                        <img src="{{ cultura.imagem }}" alt="Cultura de {{ cultura.nome }}" class="culture-card-img">
+                        <img src="{{ cultura.imagem }}" alt="Cultura de {{ cultura.nome }} tratada com Lithothamnium - Lithothamnium.org" class="culture-card-img">
                         <span class="culture-card-badge">
                             <!-- Ícones inline simplificados -->
                             {% if cultura.icone == 'coffee' %}☕
@@ -68,7 +82,7 @@
                         </span>
                     </div>
                     <div class="culture-card-content">
-                        <h4 class="culture-card-title">{{ cultura.nome }}</h4>
+                        <h3 class="culture-card-title">{{ cultura.nome }}</h3>
                         <p class="culture-card-text">{{ cultura.resumo }}</p>
                         <a href="/cultura/{{ cultura.slug }}" class="culture-card-link">
                             Acessar Guia Técnico &rarr;
@@ -86,7 +100,7 @@
             <div class="crisis-banner">
                 <div class="crisis-banner-content">
                     <span class="hero-tag" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">Análise Estratégica</span>
-                    <h3 class="crisis-banner-title">O Lithothamnium e a Solução para a Crise Global de Fertilizantes</h3>
+                    <h2 class="crisis-banner-title">O Lithothamnium e a Solução para a Crise Global de Fertilizantes</h2>
                     <p class="crisis-banner-text">
                         Com a severa redução mundial na produção de fósforo processado, causada pela escassez crítica de ácido sulfúrico e conflitos geopolíticos que afetam as rotas de importação brasileiras, otimizar a eficiência de solo é essencial. Saiba como o Lithothamnium atua quimicamente para desbloquear o fósforo adsorvido na argila, reduzindo a dependência de adubos químicos importados de alto custo.
                     </p>
@@ -103,7 +117,7 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-subtitle">Blog Técnico e Notícias</span>
-                <h3 class="section-title">Publicações Recentes</h3>
+                <h2 class="section-title">Publicações Recentes</h2>
                 <p class="section-description">
                     Acompanhe atualizações diárias sobre dinâmica de solo, reatividade de minerais biogênicos e notícias sobre o mercado agrícola global.
                 </p>
@@ -112,10 +126,10 @@
             <div class="recent-grid">
                 {% for post in blog_posts %}
                 <article class="article-card">
-                    <img src="{{ post.imagem }}" alt="Capa da Postagem" class="article-img">
+                    <img src="{{ post.imagem }}" alt="Capa da postagem: {{ post.titulo }} - Lithothamnium.org" class="article-img">
                     <div class="article-body">
                         <span class="article-meta">Cultura: {{ post.cultura | replace('_', ' / ') | title }}</span>
-                        <h4 class="article-title">{{ post.titulo }}</h4>
+                        <h3 class="article-title">{{ post.titulo }}</h3>
                         <p class="article-excerpt">{{ post.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">Por: {{ post.autor }}</span>
@@ -137,7 +151,7 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-subtitle">Pesquisa e Ciência</span>
-                <h3 class="section-title">Biblioteca Científica Curada</h3>
+                <h2 class="section-title">Biblioteca Científica Curada</h2>
                 <p class="section-description">
                     Estudos e artigos acadêmicos indexados diretamente dos principais periódicos do agronegócio.
                 </p>
@@ -146,10 +160,10 @@
             <div class="recent-grid">
                 {% for pesquisa in pesquisas %}
                 <article class="article-card">
-                    <img src="{{ pesquisa.imagem }}" alt="Capa do Artigo" class="article-img">
+                    <img src="{{ pesquisa.imagem }}" alt="Capa do artigo científico: {{ pesquisa.titulo }} - Lithothamnium.org" class="article-img">
                     <div class="article-body">
                         <span class="article-meta">Área: {{ pesquisa.cultura | replace('_', ' / ') | title }}</span>
-                        <h4 class="article-title">{{ pesquisa.titulo }}</h4>
+                        <h3 class="article-title">{{ pesquisa.titulo }}</h3>
                         <p class="article-excerpt">{{ pesquisa.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">{{ pesquisa.autores }}</span>

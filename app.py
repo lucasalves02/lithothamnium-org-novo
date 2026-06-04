@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, Response
 import sqlite3
 import os
 import shutil
@@ -176,6 +176,59 @@ def blog_post(id):
     
     conn.close()
     return render_template('blog_post.html', post=post, relacionados=relacionados)
+
+# Rota para Sitemap Dinâmico (SEO)
+@app.route('/sitemap.xml')
+def sitemap():
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    
+    base_url = request.url_root.rstrip('/')
+    if '127.0.0.1' in base_url or 'localhost' in base_url:
+        base_url = 'https://lithothamnium.org'
+        
+    urls = [
+        {"loc": f"{base_url}/", "priority": "1.0"},
+        {"loc": f"{base_url}/artigos", "priority": "0.8"},
+        {"loc": f"{base_url}/blog", "priority": "0.8"},
+    ]
+    
+    # Adiciona culturas
+    cursor.execute('SELECT slug FROM culturas')
+    for row in cursor.fetchall():
+        urls.append({"loc": f"{base_url}/cultura/{row['slug']}", "priority": "0.7"})
+        
+    # Adiciona artigos científicos
+    cursor.execute('SELECT id FROM pesquisas')
+    for row in cursor.fetchall():
+        urls.append({"loc": f"{base_url}/artigo/{row['id']}", "priority": "0.6"})
+        
+    # Adiciona posts de blog
+    cursor.execute('SELECT id FROM blog_posts')
+    for row in cursor.fetchall():
+        urls.append({"loc": f"{base_url}/blog/{row['id']}", "priority": "0.6"})
+        
+    conn.close()
+    
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for url in urls:
+        xml_content += '  <url>\n'
+        xml_content += f"    <loc>{url['loc']}</loc>\n"
+        xml_content += f"    <priority>{url['priority']}</priority>\n"
+        xml_content += '  </url>\n'
+    xml_content += '</urlset>'
+    
+    return Response(xml_content, mimetype='application/xml')
+
+# Rota para robots.txt (SEO)
+@app.route('/robots.txt')
+def robots():
+    base_url = request.url_root.rstrip('/')
+    if '127.0.0.1' in base_url or 'localhost' in base_url:
+        base_url = 'https://lithothamnium.org'
+    content = f"User-agent: *\nAllow: /\nSitemap: {base_url}/sitemap.xml\n"
+    return Response(content, mimetype='text/plain')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Técnico do Lithothamnium | Lithothamnium.org</title>
+    <title>Blog Técnico - Notícias e Artigos Agrícolas | Lithothamnium.org</title>
+    <meta name="description" content="Acompanhe publicações técnicas sobre dinâmica de solo, reatividade de minerais biogênicos, nutrição de plantas e a geopolítica de fertilizantes.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -26,7 +27,7 @@
     <!-- Header Section -->
     <header class="hero" style="padding: 4rem 0 3rem 0; background-color: var(--primary); text-align: left;">
         <div class="container">
-            <h2 style="font-size: 2.25rem; color: white;">Blog Técnico & Notícias</h2>
+            <h1 style="font-size: 2.25rem; color: white;">Blog Técnico & Notícias</h1>
             <p style="color: rgba(255,255,255,0.85); margin-top: 0.5rem; max-width: 700px;">
                 Informações diárias, análises de solo, dinâmicas de fósforo e o panorama do mercado global de fertilizantes.
             </p>
@@ -62,10 +63,10 @@
             <div class="recent-grid">
                 {% for post in blog_posts %}
                 <article class="article-card">
-                    <img src="{{ post.imagem }}" alt="Capa da Postagem" class="article-img">
+                    <img src="{{ post.imagem }}" alt="Capa do post de blog: {{ post.titulo }} - Lithothamnium.org" class="article-img">
                     <div class="article-body">
                         <span class="article-meta">Cultura: {{ post.cultura | replace('_', ' / ') | title }}</span>
-                        <h4 class="article-title">{{ post.titulo }}</h4>
+                        <h3 class="article-title">{{ post.titulo }}</h3>
                         <p class="article-excerpt">{{ post.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">Por: {{ post.autor }}</span>
