@@ -132,7 +132,7 @@
                     <p class="crisis-banner-text">
                         Com a severa redução mundial na produção de fósforo processado, causada pela escassez crítica de ácido sulfúrico e conflitos geopolíticos que afetam as rotas de importação brasileiras, otimizar a eficiência de solo é essencial. Saiba como o Lithothamnium atua quimicamente para desbloquear o fósforo adsorvido na argila, reduzindo a dependência de adubos químicos importados de alto custo.
                     </p>
-                    <a href="/blog/1" class="btn-primary" style="background-color: var(--white); color: var(--primary); box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);">
+                    <a href="/blog/1-a-crise-do-fosforo-e-o-gargalo-do-acido-sulfurico-na-agricultura" class="btn-primary" style="background-color: var(--white); color: var(--primary); box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);">
                         Ler Artigo Técnico Completo
                     </a>
                 </div>
@@ -161,7 +161,7 @@
                         <p class="article-excerpt">{{ post.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">Por: {{ post.autor }}</span>
-                            <a href="/blog/{{ post.id }}" class="article-link">Ler Postagem &rarr;</a>
+                            <a href="/blog/{{ post.id }}-{{ post.titulo | slugify }}" class="article-link">Ler Postagem &rarr;</a>
                         </div>
                     </div>
                 </article>
@@ -195,7 +195,7 @@
                         <p class="article-excerpt">{{ pesquisa.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">{{ pesquisa.autores }}</span>
-                            <a href="/artigo/{{ pesquisa.id }}" class="article-link">Ler Sumário Técnico &rarr;</a>
+                            <a href="/artigo/{{ pesquisa.id }}-{{ pesquisa.titulo | slugify }}" class="article-link">Ler Sumário Técnico &rarr;</a>
                         </div>
                     </div>
                 </article>

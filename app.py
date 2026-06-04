@@ -1,10 +1,23 @@
-from flask import Flask, render_template, request, abort, Response
+from flask import Flask, render_template, request, abort, Response, redirect
 import sqlite3
 import os
 import shutil
 import tempfile
+import re
+import unicodedata
 
 app = Flask(__name__)
+
+@app.template_filter('slugify')
+def slugify_filter(value):
+    if not value:
+        return ""
+    # Normalize unicode to decompose accents, e.g. é -> e
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    # Keep only alphanumeric characters, spaces and hyphens
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    # Replace spaces and multiple hyphens with a single hyphen
+    return re.sub(r'[-\s]+', '-', value)
 
 # Função para conectar no banco de pesquisas (com suporte a escrita em ambiente Vercel)
 def conectar_banco():
@@ -107,19 +120,32 @@ def artigos():
     return render_template('artigos.html', pesquisas=pesquisas, culturas=culturas, busca=busca, cultura_filtro=cultura_filtro)
 
 # Rota Dinâmica para Artigo Científico Único
-@app.route('/artigo/<int:id>')
-def artigo(id):
+@app.route('/artigo/<slug_or_id>')
+def artigo(slug_or_id):
+    parts = slug_or_id.split('-', 1)
+    try:
+        artigo_id = int(parts[0])
+    except ValueError:
+        abort(404)
+        
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM pesquisas WHERE id = ?', (id,))
+    cursor.execute('SELECT * FROM pesquisas WHERE id = ?', (artigo_id,))
     pesquisa = cursor.fetchone()
     
     if pesquisa is None:
         conn.close()
         abort(404)
         
+    correct_slug = slugify_filter(pesquisa['titulo'])
+    expected_path = f"{artigo_id}-{correct_slug}"
+    
+    if slug_or_id != expected_path:
+        conn.close()
+        return redirect(f"/artigo/{expected_path}", code=301)
+        
     # Buscar artigos relacionados da mesma cultura (excluindo o atual)
-    cursor.execute('SELECT id, titulo, imagem, cultura FROM pesquisas WHERE cultura = ? AND id != ? LIMIT 3', (pesquisa['cultura'], id))
+    cursor.execute('SELECT id, titulo, imagem, cultura FROM pesquisas WHERE cultura = ? AND id != ? LIMIT 3', (pesquisa['cultura'], artigo_id))
     relacionados = cursor.fetchall()
     
     conn.close()
@@ -159,19 +185,32 @@ def blog():
     return render_template('blog.html', blog_posts=blog_posts, culturas=culturas, busca=busca, cultura_filtro=cultura_filtro)
 
 # Rota Dinâmica para Postagem Única do Blog
-@app.route('/blog/<int:id>')
-def blog_post(id):
+@app.route('/blog/<slug_or_id>')
+def blog_post(slug_or_id):
+    parts = slug_or_id.split('-', 1)
+    try:
+        post_id = int(parts[0])
+    except ValueError:
+        abort(404)
+        
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM blog_posts WHERE id = ?', (id,))
+    cursor.execute('SELECT * FROM blog_posts WHERE id = ?', (post_id,))
     post = cursor.fetchone()
     
     if post is None:
         conn.close()
         abort(404)
         
+    correct_slug = slugify_filter(post['titulo'])
+    expected_path = f"{post_id}-{correct_slug}"
+    
+    if slug_or_id != expected_path:
+        conn.close()
+        return redirect(f"/blog/{expected_path}", code=301)
+        
     # Buscar posts relacionados
-    cursor.execute('SELECT id, titulo, imagem, cultura FROM blog_posts WHERE cultura = ? AND id != ? LIMIT 3', (post['cultura'], id))
+    cursor.execute('SELECT id, titulo, imagem, cultura FROM blog_posts WHERE cultura = ? AND id != ? LIMIT 3', (post['cultura'], post_id))
     relacionados = cursor.fetchall()
     
     conn.close()
@@ -199,14 +238,16 @@ def sitemap():
         urls.append({"loc": f"{base_url}/cultura/{row['slug']}", "priority": "0.7"})
         
     # Adiciona artigos científicos
-    cursor.execute('SELECT id FROM pesquisas')
+    cursor.execute('SELECT id, titulo FROM pesquisas')
     for row in cursor.fetchall():
-        urls.append({"loc": f"{base_url}/artigo/{row['id']}", "priority": "0.6"})
+        slug = slugify_filter(row['titulo'])
+        urls.append({"loc": f"{base_url}/artigo/{row['id']}-{slug}", "priority": "0.6"})
         
     # Adiciona posts de blog
-    cursor.execute('SELECT id FROM blog_posts')
+    cursor.execute('SELECT id, titulo FROM blog_posts')
     for row in cursor.fetchall():
-        urls.append({"loc": f"{base_url}/blog/{row['id']}", "priority": "0.6"})
+        slug = slugify_filter(row['titulo'])
+        urls.append({"loc": f"{base_url}/blog/{row['id']}-{slug}", "priority": "0.6"})
         
     conn.close()
     

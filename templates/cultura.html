@@ -139,7 +139,7 @@
                                 <p style="font-size: 0.9rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem;">
                                     {{ pesquisa.resumo }}
                                 </p>
-                                <a href="/artigo/{{ pesquisa.id }}" class="article-link" style="font-size: 0.85rem;">Ler Artigo Científico &rarr;</a>
+                                <a href="/artigo/{{ pesquisa.id }}-{{ pesquisa.titulo | slugify }}" class="article-link" style="font-size: 0.85rem;">Ler Artigo Científico &rarr;</a>
                             </div>
                         </article>
                         {% endfor %}
@@ -168,7 +168,7 @@
                                 <p style="font-size: 0.85rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem;">
                                     {{ post.resumo }}
                                 </p>
-                                <a href="/blog/{{ post.id }}" class="article-link" style="font-size: 0.85rem;">Ler Postagem &rarr;</a>
+                                <a href="/blog/{{ post.id }}-{{ post.titulo | slugify }}" class="article-link" style="font-size: 0.85rem;">Ler Postagem &rarr;</a>
                             </div>
                         </article>
                         {% endfor %}

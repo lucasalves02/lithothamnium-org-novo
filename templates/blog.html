@@ -85,7 +85,7 @@
                         <p class="article-excerpt">{{ post.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">Por: {{ post.autor }}</span>
-                            <a href="/blog/{{ post.id }}" class="article-link">Ler Postagem &rarr;</a>
+                            <a href="/blog/{{ post.id }}-{{ post.titulo | slugify }}" class="article-link">Ler Postagem &rarr;</a>
                         </div>
                     </div>
                 </article>

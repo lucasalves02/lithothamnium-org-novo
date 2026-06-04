@@ -85,7 +85,7 @@
                         <p class="article-excerpt">{{ pesquisa.resumo }}</p>
                         <div class="article-footer">
                             <span class="article-author">{{ pesquisa.autores }}</span>
-                            <a href="/artigo/{{ pesquisa.id }}" class="article-link">Ver Sumário &rarr;</a>
+                            <a href="/artigo/{{ pesquisa.id }}-{{ pesquisa.titulo | slugify }}" class="article-link">Ver Sumário &rarr;</a>
                         </div>
                     </div>
                 </article>
