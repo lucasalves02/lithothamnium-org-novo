@@ -7,6 +7,8 @@ import sqlite3
 import unicodedata
 import argparse
 import requests
+from dotenv import load_dotenv
+load_dotenv()  # Carrega as variáveis do arquivo .env
 
 # Configurações de diretórios
 DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +33,7 @@ def sanitizar_nome_arquivo(titulo):
     # Limita tamanho do nome
     return nome_limpo[:100].strip('_') + ".pdf"
 
-# Função para buscar títulos já cadastrados no banco SQLite
+# Função para buscar títulos já cadastrados ou removidos (blacklist) no banco SQLite
 def obter_titulos_cadastrados():
     db_path = os.path.join(DIRETORIO_ATUAL, 'pesquisas.db')
     titulos = set()
@@ -39,6 +41,7 @@ def obter_titulos_cadastrados():
         try:
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
+            # Títulos ativos no banco
             cursor.execute("SELECT titulo FROM pesquisas")
             for row in cursor.fetchall():
                 tit = row[0].strip().lower()
@@ -46,13 +49,24 @@ def obter_titulos_cadastrados():
                 tit_limpo = "".join([c for c in nfd if unicodedata.category(c) != 'Mn'])
                 tit_limpo = re.sub(r'[^a-z0-9]', '', tit_limpo)
                 titulos.add(tit_limpo)
+            # Títulos removidos (blacklist) — evita re-download
+            try:
+                cursor.execute("SELECT titulo FROM pesquisas_removidas")
+                for row in cursor.fetchall():
+                    tit = row[0].strip().lower()
+                    nfd = unicodedata.normalize('NFD', tit)
+                    tit_limpo = "".join([c for c in nfd if unicodedata.category(c) != 'Mn'])
+                    tit_limpo = re.sub(r'[^a-z0-9]', '', tit_limpo)
+                    titulos.add(tit_limpo)
+            except sqlite3.OperationalError:
+                pass  # Tabela ainda não existe (primeira execução)
             conn.close()
         except Exception as e:
             print(f"[Aviso] Erro ao consultar pesquisas.db para duplicatas: {e}")
     return titulos
 
 # Função de busca e download usando OpenAlex
-def baixar_artigos_agricolas(limite=10):
+def baixar_artigos_agricolas(limite=10, api_key=None):
     print("=====================================================================")
     print("  Coleta Automatizada de Artigos Agrícolas (OpenAlex) - Lithothamnium")
     print("=====================================================================")
@@ -61,9 +75,9 @@ def baixar_artigos_agricolas(limite=10):
     titulos_cadastrados = obter_titulos_cadastrados()
     print(f"-> Encontrados {len(titulos_cadastrados)} títulos cadastrados no banco pesquisas.db.")
     
-    # 2. Consultar o OpenAlex para pesquisas sobre Lithothamnium/Lithothamnion
-    query = "Lithothamnium"
-    url_api = f"https://api.openalex.org/works?search={query}&per_page=100"
+    # 2. Consultar o OpenAlex com busca expandida para capturar termos em português da SciELO
+    query = 'Lithothamnium OR Lithothamnion OR "alga calcária" OR "algas calcárias"'
+    url_api = f"https://api.openalex.org/works?search={urllib.parse.quote(query)}&per_page=100"
     
     # Cabeçalho User-Agent recomendado pela OpenAlex (Politeness Policy)
     headers = {
@@ -82,43 +96,126 @@ def baixar_artigos_agricolas(limite=10):
     results = data.get("results", [])
     print(f"-> Encontrados {len(results)} artigos candidatos iniciais.")
     
-    # Palavras-chave agronômicas obrigatórias (no título ou resumo)
-    agri_keywords = [
-        "soil", "plant", "fertilizer", "crop", "agronomy", "pasture", "cultivo", 
-        "produtividade", "liming", "acidez", "adubação", "semente", "seed", 
-        "agriculture", "ph", "calcium", "magnesium", "growth", "yield", 
-        "mamoeiro", "cafe", "milho", "soja", "tomate", "rabanete", "melancia", 
-        "fruticultura", "hortaliça", "nutrição", "vinhaça", "forrageira"
+    # Palavras-chave agronômicas FORTES (1 match já é suficiente para considerar relevante)
+    agri_keywords_strong = [
+        "fertilizer", "fertilizante", "adubação", "adubo", "adubacao",
+        "crop", "lavoura", "cultivo", "plantio", "safra",
+        "agronomy", "agronomia", "agronomico",
+        "pasture", "pastagem", "pasto", "forrageira", "forragem",
+        "liming", "calagem", "corretivo", "acidez do solo",
+        "semente", "seed", "seedling", "muda", "mudas",
+        "produtividade", "yield", "colheita", "harvest",
+        "hortaliça", "hortalica", "fruticultura", "frutiferas",
+        "cafeeiro", "cafe", "coffee",
+        "milho", "corn", "maize", "soja", "soybean",
+        "cana-de-acucar", "sugarcane", "cana de acucar",
+        "tomate", "tomato", "rabanete", "radish", "melancia", "watermelon",
+        "mamoeiro", "papaya", "mamao", "melao", "melon",
+        "pimentao", "bell pepper", "alface", "lettuce",
+        "algodao", "cotton", "arroz", "rice", "trigo", "wheat",
+        "citros", "citrus", "laranja", "orange", "limao",
+        "eucalipto", "eucalyptus", "silvicultura", "forestry",
+        "vinhaça", "vinhaca", "nutrição de plantas", "plant nutrition",
+        "solo agricola", "agricultural soil", "rizosfera", "rhizosphere",
+        "enraizamento", "rooting", "sistema radicular", "root system",
+        "confinamento", "feedlot", "bovino", "cattle", "novilho", "steer",
+        "sal mineral", "mineral salt", "nutrição animal", "animal nutrition",
+        "prebiotico", "prebiotic", "ruminante", "ruminant",
     ]
-    # Termos médicos a excluir
+
+    # Palavras-chave agronômicas FRACAS (precisam de 2+ matches para valer)
+    agri_keywords_weak = [
+        "soil", "plant", "growth", "calcium", "magnesium",
+        "ph", "nutrição", "nutrition", "biomass", "biomassa",
+        "organic", "organico", "root", "raiz",
+    ]
+
+    # Termos de EXCLUSÃO expandidos (artigos com esses termos são descartados)
     exclude_keywords = [
-        "clinical", "medical", "dental", "dentistry", "human", "patient", "surgery", 
-        "cancer", "tumor", "rats", "mice", "bone", "in vivo", "toxicity", "cell line",
-        "cadmium removal", "heavy metal", "wastewater"
+        # Medicina e saúde
+        "clinical", "medical", "dental", "dentistry", "human", "patient", "surgery",
+        "cancer", "tumor", "rats", "mice", "bone graft", "bone substitute", "bone tissue",
+        "in vivo", "toxicity", "cell line", "osteoblast", "orthopedic", "implant",
+        "pharmaceutical", "drug delivery", "therapeutic",
+        # Geologia / Oceanografia / Paleontologia
+        "seafloor", "ocean floor", "deep sea", "marine sediment", "sedimentology",
+        "geochemistry", "geoquimica", "paleontology", "paleontologia", "fossil",
+        "eocene", "miocene", "pliocene", "holocene", "pleistocene", "quaternary",
+        "stratigraphy", "estratigrafia", "tectonic", "volcanic",
+        "continental shelf", "plataforma continental", "bathymetry",
+        "reef ecology", "coral reef", "recife de coral",
+        # Taxonomia / Biologia marinha pura
+        "taxonomy", "taxonomia", "taxonomic", "new species", "nova especie",
+        "morphological analysis", "rhodolith bed", "rhodolith",
+        "coralline algae ecology", "species description", "phylogeny", "filogenia",
+        "biogeography", "biogeografia", "seabed", "leito marinho",
+        "crustose coralline", "crostosas", "coralinaceas",
+        "sea lily", "crinoid", "echinoderm",
+        # Ciência de alimentos / Industrial
+        "food product", "food industry", "snack", "biscoito", "cookie", "biscuit",
+        "beverage", "bebida", "consumer acceptance", "aceitação do consumidor",
+        "sensory evaluation", "avaliação sensorial",
+        "food additive", "aditivo alimentar", "food supplement",
+        # Meio ambiente / Remediação
+        "cadmium removal", "heavy metal", "wastewater", "water treatment",
+        "bioremediation", "bioremediação", "pollutant", "poluente",
+        "carbon sequestration in ocean", "ocean acidification",
+        # Biofilme / Microbiologia pura
+        "biofilm formation", "formação de biofilme", "transcriptomic",
+        "transcriptômica", "gene expression profiling",
     ]
-    
+
     downloads_realizados = 0
-    
+
     for artigo in results:
         if downloads_realizados >= limite:
             break
-            
+
         titulo = artigo.get("title", "")
         if not titulo:
             continue
-            
+
         # Obter a melhor localização de acesso aberto com PDF
         best_location = artigo.get("best_oa_location")
         if not best_location:
             best_location = artigo.get("open_access", {})
-            
+
         pdf_url = best_location.get("pdf_url") or best_location.get("oa_url")
         is_oa = artigo.get("open_access", {}).get("is_oa", False)
+
+        # 1. Verificar se o artigo pertence à base SciELO
+        locations = artigo.get("locations", []) or []
+        e_scielo = False
+        scielo_pdf_url = None
         
-        # 1. Verificar se é Acesso Aberto e possui link de PDF
-        if not is_oa or not pdf_url:
+        for loc in locations:
+            landing_url = (loc.get("landing_page_url") or "").lower()
+            pdf_loc_url = (loc.get("pdf_url") or "").lower()
+            source = loc.get("source") or {}
+            source_name = (source.get("display_name") or "").lower()
+            
+            # Se encontrar qualquer menção a scielo na URL de pouso, PDF ou no nome da fonte
+            if "scielo" in landing_url or "scielo" in pdf_loc_url or "scielo" in source_name:
+                e_scielo = True
+                if loc.get("pdf_url"):
+                    scielo_pdf_url = loc.get("pdf_url")
+                    break
+        
+        # Checa também se o DOI pertence à SciELO Brasil (10.1590)
+        doi = (artigo.get("doi") or "").lower()
+        if "10.1590" in doi:
+            e_scielo = True
+            
+        if not e_scielo:
             continue
             
+        # Se for SciELO, prioriza a URL do PDF da própria SciELO
+        pdf_url = scielo_pdf_url or pdf_url
+
+        # Verificar se é Acesso Aberto e possui link de PDF válido
+        if not is_oa or not pdf_url:
+            continue
+
         # 2. Reconstrói o abstract se disponível
         abstract = ""
         abstract_inverted = artigo.get("abstract_inverted_index")
@@ -131,15 +228,21 @@ def baixar_artigos_agricolas(limite=10):
                 abstract = " ".join([words[pos] for pos in sorted(words.keys())])
             except Exception:
                 pass
-                
-        # 3. Filtrar termos agrícolas e excluir termos médicos
-        texto_busca_exclusao = (titulo + " " + abstract).lower()
-        has_agri = any(k in texto_busca_exclusao for k in agri_keywords)
-        has_med = any(k in texto_busca_exclusao for k in exclude_keywords)
-        
-        if not has_agri or has_med:
-            # Exibe os pulados devido ao escopo
-            # print(f"  [Escopo Inadequado] '{titulo[:50]}...'")
+
+        # 3. Filtrar termos agrícolas e excluir termos irrelevantes
+        texto_busca = (titulo + " " + abstract).lower()
+
+        # Verificação de exclusão (prioridade máxima)
+        has_exclude = any(k in texto_busca for k in exclude_keywords)
+        if has_exclude:
+            continue
+
+        # Verificação de relevância agrícola (sistema de pontuação)
+        has_strong = any(k in texto_busca for k in agri_keywords_strong)
+        weak_count = sum(1 for k in agri_keywords_weak if k in texto_busca)
+
+        # Precisa de pelo menos 1 termo forte OU 2+ termos fracos
+        if not has_strong and weak_count < 2:
             continue
             
         # 4. Checagem de títulos duplicados contra o banco pesquisas.db
@@ -204,15 +307,18 @@ def baixar_artigos_agricolas(limite=10):
     print(f"\n=====================================================================")
     print(f"  Coleta concluída! {downloads_realizados} novos PDFs agrícolas salvos.")
     if downloads_realizados > 0:
-        print("  Iniciando processamento automático dos novos artigos com newscrap.py...")
+        print("  Iniciando processamento automático dos novos artigos com ingest_pdfs.py...")
         import subprocess
         try:
-            # Invoca o script newscrap.py
-            subprocess.run([sys.executable, os.path.join(DIRETORIO_ATUAL, "newscrap.py")], check=True)
+            # Invoca o script ingest_pdfs.py repassando a API key
+            cmd = [sys.executable, os.path.join(DIRETORIO_ATUAL, "ingest_pdfs.py")]
+            if api_key:
+                cmd.extend(["--api-key", api_key])
+            subprocess.run(cmd, check=True)
             print("  Processamento automático concluído com sucesso!")
         except Exception as e:
-            print(f"  [Erro] Falha ao executar o newscrap.py automaticamente: {e}")
-            print("  Por favor, execute manualmente: python newscrap.py")
+            print(f"  [Erro] Falha ao executar o ingest_pdfs.py automaticamente: {e}")
+            print("  Por favor, execute manualmente: python ingest_pdfs.py")
     else:
         print("  Nenhum novo artigo foi baixado. O banco de dados já está atualizado.")
     print("=====================================================================")
@@ -220,6 +326,8 @@ def baixar_artigos_agricolas(limite=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scraper de PDFs Científicos sobre Lithothamnium via OpenAlex.")
     parser.add_argument("--limit", type=int, default=10, help="Limite de PDFs para baixar (Padrão: 10)")
+    parser.add_argument("--api-key", type=str, default=None, help="Chave de API do Gemini para gerar sínteses e classificar culturas.")
     args = parser.parse_args()
-    
-    baixar_artigos_agricolas(limite=args.limit)
+
+    chave_api = args.api_key or os.environ.get('GEMINI_API_KEY')
+    baixar_artigos_agricolas(limite=args.limit, api_key=chave_api)

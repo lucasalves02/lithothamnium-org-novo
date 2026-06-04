@@ -2,3 +2,4 @@ Flask
 PyPDF2
 pymupdf
 deep-translator
+python-dotenv
