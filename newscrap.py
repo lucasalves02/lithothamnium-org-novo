@@ -529,11 +529,28 @@ def processar_pdfs_locais(conn, api_key=None):
         link_imagem = f"/static/capas/{nome_base_seguro}.png"
         
         try:
+            from PIL import Image
+            from io import BytesIO
             with fitz.open(caminho_pdf_entrada) as pdf_doc:
                 pagina_capa = pdf_doc.load_page(0)
                 pix = pagina_capa.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))
-                pix.save(caminho_capa_destino)
+                
+                # Abre a imagem gerada na memória com PIL e otimiza
+                img_data = pix.tobytes("png")
+                img = Image.open(BytesIO(img_data))
+                
+                max_width = 400
+                if img.width > max_width:
+                    ratio = max_width / img.width
+                    new_height = int(img.height * ratio)
+                    img = img.resize((max_width, new_height), Image.Resampling.LANCZOS)
+                
+                if img.mode != 'P':
+                    img = img.convert("RGBA").quantize(colors=256)
+                    
+                img.save(caminho_capa_destino, "PNG", optimize=True)
         except Exception as e:
+            print(f"  -> Erro ao gerar capa do PDF no newscrap: {e}")
             link_imagem = "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80"
  
         # 5.5. Gerar síntese via Gemini API

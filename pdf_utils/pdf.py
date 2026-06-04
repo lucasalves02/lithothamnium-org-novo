@@ -84,7 +84,7 @@ def extrair_resumo_limpo(texto):
 
 
 def gerar_capa_pdf(caminho_pdf_entrada, caminho_capa_destino, escala=1.5):
-    """Gera uma imagem PNG da primeira página do PDF como miniatura.
+    """Gera uma imagem PNG otimizada e redimensionada da primeira página do PDF como miniatura.
     
     Args:
         caminho_pdf_entrada: Caminho do PDF de entrada.
@@ -95,10 +95,28 @@ def gerar_capa_pdf(caminho_pdf_entrada, caminho_capa_destino, escala=1.5):
         True se a capa foi gerada com sucesso, False caso contrário.
     """
     try:
+        from PIL import Image
+        from io import BytesIO
         with fitz.open(caminho_pdf_entrada) as pdf_doc:
             pagina_capa = pdf_doc.load_page(0)
             pix = pagina_capa.get_pixmap(matrix=fitz.Matrix(escala, escala))
-            pix.save(caminho_capa_destino)
+            
+            # Abre a imagem gerada na memória com PIL
+            img_data = pix.tobytes("png")
+            img = Image.open(BytesIO(img_data))
+            
+            # Redimensiona para no máximo 400px de largura (tamanho ideal para miniaturas)
+            max_width = 400
+            if img.width > max_width:
+                ratio = max_width / img.width
+                new_height = int(img.height * ratio)
+                img = img.resize((max_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Quantiza para paleta de cores de 8 bits (reduz o peso em ~85% mantendo alta qualidade)
+            if img.mode != 'P':
+                img = img.convert("RGBA").quantize(colors=256)
+                
+            img.save(caminho_capa_destino, "PNG", optimize=True)
         return True
     except Exception as e:
         print(f"  -> Erro ao gerar capa do PDF: {e}")
